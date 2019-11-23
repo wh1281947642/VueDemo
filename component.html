@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>componet全局组件</title>
+</head>
+<body>
+    <div id="app">
+        <counter :num1="num" :title="0" @incr1="incr()"  ></counter><br>
+       <!-- <counter></counter><br>
+        <counter></counter>-->
+    </div>
+
+
+</body>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script>
+
+    /* 全局组件
+     * counter:组件名
+     *{  }:组件属性
+     * 子组件
+     * 父向子通信
+     */
+    Vue.component("counter",{
+        //template:"<button @click='num1++'>点我啊，点我加1 {{num1}}-{{title}}</button>",
+        template:"<button @click='this.subIncr'>点我啊，点我加1 {{num1}}-{{title}}</button>",
+        /*data(){
+            return{
+                num:0
+            }
+        },*/
+        props:{
+            num1:{
+                type:Number,
+                default:0
+            },
+            title:{
+                type:Number
+            },
+        },
+        methods:{
+            subIncr(){
+                this.$emit("incr1");
+            }
+        }
+    })
+
+    /* Vue实例
+     * 父组件
+     */
+    const app = new Vue({
+        el:"#app",
+        data:{
+            num:0
+        },
+        methods:{
+            incr(){
+                this.num++;
+            }
+        }
+    })
+</script>
+</html>

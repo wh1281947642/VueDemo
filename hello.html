@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue</title>
+</head>
+<style>
+    .active{
+    }
+</style>
+<body>
+<!-- vue对象的HTML模板 -->
+<div id="app">
+
+    <h2>watch监听</h2>
+    <input type="text" v-model="search"><hr>
+
+    <h2>计算属性</h2>
+    <!--原始-->
+    <div>原始方式:{{new Date(birthday).getFullYear()+"年"+new Date(birthday).getMonth()+"月"+new Date(birthday).getDay()+"日"}}</div>
+    <!--使用函数-->
+    <div>使用函数:{{birth()}}</div>
+    <!--使用计算属性-->
+    <div>使用计算属性:{{birth1}}</div><hr>
+
+    <h2>v-bind</h2>
+    <input type="button" v-bind:value="value" @click="random=Math.random()">{{random}}<br>
+    <input type="text" v-model="store"><br>
+    <input type="button" v-bind:class="{active:store>0}"  class="static aaa bbb" value="加入购物车(全写)">
+    <!--简写-->
+    <input type="button" :class="{active:store>0}" value="加入购物车(简写)">
+    <hr>
+
+    <h2>v-if/v-else-if</h2>
+    <input type="button" value="点我啊,生成随机数" @click="random=Math.random()">{{random}}<br>
+    <span v-if="random>0.75">你看到我了,说明random>0.75</span>
+    <span v-else-if="random>0.5">你看到我了,说明random>0.5</span>
+    <span v-else-if="random>0.25">你看到我了,说明random>0.25</span>
+    <span v-else>你看到我了,说明random>=0</span><hr>
+
+    <h2>v-if/v-show</h2>
+    <input type="button" value="点我啊" @click="show=!show"><br>
+    <span v-if="show">你看到我了,说明我是true,if</span><br>
+    <span v-show="show">你看到我了,说明我是true,show</span><hr>
+
+    <h2>v-for遍历对象</h2>
+    <ul>
+        <li v-for="(val,key,index) in user" :key="index">{{index+1}}.{{key}}:{{val}}</li>
+    </ul><hr>
+
+    <h2>v-for/v-if遍历数组</h2>
+    <ul>
+        <li v-if="user.gender == '女'"  v-for="(user,index) in users" :key="index">{{index+1}}.{{user.name}}-{{user.gender}}-{{user.age}}</li>
+    </ul><hr>
+
+    <h2>v-for遍历数组</h2>
+    <ul>
+        <li v-for="(user,index) in users" :key="index">{{index+1}}.{{user.name}}-{{user.gender}}-{{user.age}}</li>
+    </ul><hr>
+
+    <h2>v-model双向绑定</h2>
+    <input type="checkbox" value="ios" v-model="language">ios<br>
+    <input type="checkbox" value="java" v-model="language">java<br>
+    <input type="checkbox" value="php" v-model="language">php<br>
+    您选择了:{{language.join(",")}}<hr>
+
+    <h2>v-on:click/@click点击事件</h2>
+    <!-- 双向绑定,v-model:数据模型 -->
+    <input type="text" v-model="num"><br>
+    <!-- v-on:事件名=js表达式 -->
+    <input type="button" value="点我啊" v-on:click="incr"><br>
+    <input type="button" value="点我啊(简写)" @click="incr"><br>
+    <input type="button" value="点我啊(又击)" @contextMenu.prevent="incr"><hr>
+
+    <h2>keyup键盘事件</h2>
+    <!-- 回车提交-->
+    <input value="回车提交" @keyup.enter="submit">
+    <!-- 组合按键 -->
+    <input value="组合按键" @keyup.alt.67="submit"><hr>
+
+    <h2>插值表达式/插值闪烁</h2>
+    <!--花括号:js表达式/方法名-->
+    <h1>大家好,我是<span v-text="name"></span>,有{{num}}位妹子迷恋我</h1>
+</div>
+</body>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script>
+    /* 初始化vue实例 */
+    const app = new Vue({
+        /*element,选择器*/
+        el: "#app",
+
+        /*定义数据模型*/
+        data:{
+            name:"渣渣辉",
+            num:100,
+            language:[],
+            users:[
+                {name:'柳岩', gender:'女', age: 21},
+                {name:'虎哥', gender:'男', age: 30},
+                {name:'范冰冰', gender:'女', age: 24},
+                {name:'刘亦菲', gender:'女', age: 18},
+                {name:'古力娜扎', gender:'女', age: 25}
+            ],
+            user:{name:'柳岩', gender:'女', age: 21},
+            show:true,
+            random:0,
+            value:"点我啊",
+            store:0,
+            birthday:1529032123201, // 毫秒值
+            search:""
+        },
+
+        /*初始化函数 常用的钩子函数*/
+        created(){
+            //alert("created()");
+            console.log("created()");
+        },
+
+        /* 监听,方法名和监听的数据模型要一致 */
+        watch:{
+            search(newVal,oldVal){
+                //发送请求到后台接口
+                console.log(newVal,oldVal);
+            }
+
+        },
+
+        /*方法*/
+        methods:{
+            incr(){
+                //静止默认事件
+                //ev.preventDefault();
+                this.num++
+            },
+            submit(){
+                alert("表单已经提交!")
+            },
+            birth(){
+                const  date = new Date(this.birthday);
+                return date.getFullYear()+"年"+date.getMonth()+"月"+date.getDay()+"日"
+                //return this.birth1
+                //return new Date(this.birthday).getFullYear()+"年"+new Date(this.birthday).getMonth()+"月"+new Date(this.birthday).getDay()+"日"
+            }
+
+        },
+
+        /*1.计算属性 ,里面也可以定义方法，但是这些方法必须有返回值,计算属性可以像普通的数据模型一样使用
+        * 2.会根据birthday缓存
+        * */
+        computed:{
+            birth1(){
+                const  date = new Date(this.birthday);
+                return date.getFullYear()+"年"+date.getMonth()+"月"+date.getDay()+"日"
+                //return new Date(this.birthday).getFullYear()+"年"+new Date(this.birthday).getMonth()+"月"+new Date(this.birthday).getDay()+"日"
+            }
+        }
+    })
+</script>
+</html>
